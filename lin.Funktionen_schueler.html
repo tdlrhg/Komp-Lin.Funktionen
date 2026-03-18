@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathe 8 – Lineare Funktionen</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #f0f4ff;
+    --card: #ffffff;
+    --primary: #3b5bdb;
+    --primary-light: #748ffc;
+    --green: #2f9e44;
+    --green-light: #d3f9d8;
+    --yellow: #e67700;
+    --yellow-light: #fff3bf;
+    --red: #c92a2a;
+    --red-light: #ffe3e3;
+    --text: #1a1a2e;
+    --muted: #6c757d;
+    --border: #dee2e6;
+    --shadow: 0 4px 24px rgba(59,91,219,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  header { text-align: center; margin-bottom: 32px; }
+  header h1 { font-size: 2rem; font-weight: 900; color: var(--primary); letter-spacing: -1px; cursor: pointer; }
+  header p { color: var(--muted); font-size: 1rem; margin-top: 4px; }
+
+  .name-badge {
+    display: inline-block; background: var(--primary); color: white;
+    font-weight: 800; font-size: 0.85rem; padding: 4px 14px;
+    border-radius: 20px; margin-top: 8px; cursor: pointer;
+  }
+
+  .login-card {
+    max-width: 480px; margin: 0 auto 32px; background: var(--card);
+    border-radius: 20px; padding: 36px 28px; box-shadow: var(--shadow); text-align: center;
+  }
+  .login-card h2 { font-size: 1.3rem; font-weight: 900; margin-bottom: 10px; color: var(--primary); }
+  .login-card p { color: var(--muted); font-size: 0.95rem; margin-bottom: 24px; line-height: 1.6; }
+
+  .name-input {
+    width: 100%; padding: 14px 16px; border: 2px solid var(--border);
+    border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 1rem;
+    font-weight: 700; margin-bottom: 16px; outline: none; transition: border-color 0.2s;
+  }
+  .name-input:focus { border-color: var(--primary); }
+
+  .landkarte {
+    max-width: 700px; margin: 0 auto 40px; background: var(--card);
+    border-radius: 20px; padding: 28px; box-shadow: var(--shadow);
+  }
+  .landkarte h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .landkarte-hinweis { font-size: 0.83rem; color: var(--muted); margin-bottom: 18px; }
+
+  .block-header {
+    font-size: 0.72rem; font-weight: 900; letter-spacing: 0.08em;
+    text-transform: uppercase; color: white; padding: 4px 12px;
+    border-radius: 6px; margin: 16px 0 8px; display: inline-block;
+  }
+  .block-I    { background: #7048e8; }
+  .block-II   { background: #1c7ed6; }
+  .block-III  { background: #0ca678; }
+  .block-IV   { background: #f76707; }
+  .block-V    { background: #c2255c; }
+  .block-VI   { background: #495057; }
+  .block-bonus-wrapper {
+    margin-top: 24px; border: 2px dashed #adb5bd; border-radius: 14px;
+    padding: 16px 16px 8px; background: #f8f9fa;
+  }
+  .block-bonus-label {
+    font-size: 0.75rem; font-weight: 900; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #495057; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .block-bonus-label span {
+    background: #495057; color: white; padding: 3px 10px; border-radius: 6px;
+  }
+
+  .kompetenz-liste { display: flex; flex-direction: column; gap: 8px; }
+
+  .kompetenz-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    border-radius: 12px; border: 2px solid var(--border); background: #fafbff;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .kompetenz-item.gruen { border-color: var(--green); background: var(--green-light); }
+  .kompetenz-item.gelb  { border-color: var(--yellow); background: var(--yellow-light); }
+  .kompetenz-item.gesperrt { opacity: 0.4; }
+
+  .aufkleber {
+    width: 36px; height: 36px; border-radius: 50%; border: 2px dashed var(--border);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; transition: all 0.4s;
+  }
+  .kompetenz-item.gruen .aufkleber { border: 2px solid var(--green); background: var(--green); animation: pop 0.4s ease; }
+  .kompetenz-item.gelb  .aufkleber { border: 2px solid var(--yellow); background: var(--yellow-light); }
+
+  @keyframes pop {
+    0%   { transform: scale(0.5); opacity: 0; }
+    70%  { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .kompetenz-text { font-size: 0.92rem; font-weight: 600; line-height: 1.4; color: var(--text); }
+  .kompetenz-nr   { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--muted); flex-shrink: 0; width: 20px; }
+
+  .test-starten-btn {
+    margin-left: auto; padding: 6px 14px; background: var(--primary); color: white;
+    border: none; border-radius: 8px; font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem; font-weight: 800; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  }
+
+  .test-container { max-width: 700px; margin: 0 auto; }
+  .test-card { background: var(--card); border-radius: 20px; padding: 28px; box-shadow: var(--shadow); margin-bottom: 20px; }
+  .test-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 8px; flex-wrap: wrap; }
+  .test-title   { font-size: 1rem; font-weight: 800; color: var(--primary); }
+  .fortschritt  { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--muted); background: var(--bg); padding: 4px 10px; border-radius: 20px; }
+  .frage-text   { font-size: 1rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5; }
+  .kontext-box  { background: #f0f4ff; border-left: 3px solid var(--primary); padding: 10px 14px; border-radius: 4px; font-size: 0.92rem; margin-bottom: 12px; color: var(--muted); font-weight: 600; }
+
+  .antworten { display: flex; flex-direction: column; gap: 10px; }
+
+  .antwort-btn {
+    padding: 14px 18px; border-radius: 12px; border: 2px solid var(--border);
+    background: #fafbff; font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+    font-weight: 700; cursor: pointer; text-align: left;
+    transition: border-color 0.2s, background 0.2s, transform 0.1s;
+  }
+  .antwort-btn:hover:not(:disabled) { border-color: var(--primary-light); background: #eef2ff; transform: translateX(4px); }
+  .antwort-btn.richtig { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .antwort-btn.falsch  { border-color: var(--red);   background: var(--red-light);   color: var(--red);   }
+  .antwort-btn:disabled { cursor: default; }
+
+  .feedback { display: none; margin-top: 16px; padding: 14px 16px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; line-height: 1.5; }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: var(--green-light); color: var(--green); }
+  .feedback.nok { background: var(--red-light);   color: var(--red);   }
+
+  .weiter-btn {
+    display: none; margin-top: 16px; width: 100%; padding: 14px;
+    background: var(--primary); color: white; border: none; border-radius: 12px;
+    font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .weiter-btn:hover { background: #2f4bbf; }
+  .weiter-btn.show { display: block; }
+
+  .ergebnis-card {
+    display: none; background: var(--card); border-radius: 20px;
+    padding: 36px 28px; box-shadow: var(--shadow); text-align: center;
+  }
+  .ergebnis-card.show { display: block; }
+  .ergebnis-emoji  { font-size: 3.5rem; margin-bottom: 12px; animation: pop 0.5s ease; }
+  .ergebnis-score  { font-family: 'Space Mono', monospace; font-size: 2.5rem; font-weight: 700; margin-bottom: 8px; }
+  .ergebnis-score.gruen { color: var(--green); }
+  .ergebnis-score.gelb  { color: var(--yellow); }
+  .ergebnis-score.rot   { color: var(--red); }
+  .ergebnis-titel  { font-size: 1.5rem; font-weight: 900; margin-bottom: 8px; }
+  .ergebnis-text   { color: var(--muted); font-size: 1rem; margin-bottom: 24px; line-height: 1.6; }
+
+  .btn-reihe { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+
+  .nochmal-btn {
+    padding: 14px 24px; background: var(--bg); color: var(--primary);
+    border: 2px solid var(--primary); border-radius: 12px; font-family: 'Nunito', sans-serif;
+    font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s;
+  }
+  .nochmal-btn:hover { background: var(--primary); color: white; }
+
+  .download-btn {
+    padding: 14px 24px; background: var(--green); color: white; border: none;
+    border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 1rem;
+    font-weight: 800; cursor: pointer; transition: all 0.2s;
+  }
+  .download-btn:hover { background: #237032; }
+  .download-btn.versteckt { display: none; }
+
+  .download-hinweis { font-size: 0.82rem; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+  .versteckt { display: none; }
+
+  .haupt-btn {
+    width: 100%; padding: 16px; background: var(--primary); color: white; border: none;
+    border-radius: 14px; font-family: 'Nunito', sans-serif; font-size: 1.1rem;
+    font-weight: 800; cursor: pointer; transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 4px 16px rgba(59,91,219,0.25);
+  }
+  .haupt-btn:hover { background: #2f4bbf; transform: translateY(-1px); }
+
+  .abgabe-card {
+    max-width: 700px; margin: 0 auto 24px; background: #fff8e1;
+    border: 2px solid var(--yellow); border-radius: 16px; padding: 18px 20px;
+    font-size: 0.9rem; line-height: 1.6; color: #5c4000; display: none;
+  }
+  .abgabe-card.show { display: block; }
+  .abgabe-card strong { color: var(--yellow); }
+
+  input[type="text"], input[type="number"] {
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .eingabe-feld {
+    padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px;
+    font-size: 0.95rem; font-weight: 700; outline: none; transition: border-color 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+  .eingabe-feld:focus { border-color: var(--primary); }
+
+  .pruef-btn {
+    padding: 10px 20px; background: var(--primary); color: white; border: none;
+    border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+    font-weight: 800; cursor: pointer; margin-top: 12px;
+  }
+
+  .gleichung-box {
+    background: #f0f4ff; border: 2px solid var(--primary-light);
+    border-radius: 12px; padding: 14px 20px; text-align: center;
+    font-family: 'Space Mono', monospace; font-size: 1.1rem; font-weight: 700;
+    color: var(--primary); margin-bottom: 16px; letter-spacing: 0.05em;
+  }
+
+  .punkt-box {
+    display: inline-block; background: #f8f9fa; border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 14px; font-family: 'Space Mono', monospace;
+    font-size: 0.9rem; font-weight: 700; color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="haupttitel" onclick="devModeKlick()">📈 Lernlandkarte Lineare Funktionen</h1>
+  <p>Mathe Klasse 8</p>
+  <div id="name-anzeige" class="versteckt">
+    <span class="name-badge" onclick="nameAendern()" title="Name ändern">👤 <span id="name-text"></span> ✏️</span>
+  </div>
+</header>
+
+<div class="login-card" id="login-card">
+  <h2>👋 Hallo!</h2>
+  <p>Gib deinen Vor- und Nachnamen ein, damit dein Lernstand gespeichert werden kann.</p>
+  <input type="text" class="name-input" id="name-input" placeholder="Vorname Nachname" maxlength="60"
+    onkeydown="if(event.key==='Enter') loginBestaetigen()">
+  <button class="haupt-btn" onclick="loginBestaetigen()">Los geht's →</button>
+</div>
+
+<div class="landkarte versteckt" id="landkarte">
+  <h2>📍 Mein Lernstand</h2>
+  <p class="landkarte-hinweis">Starte einen Test und sammle Aufkleber. 🟢 = geschafft · 🟡 = fast · 🔒 = noch gesperrt</p>
+  <div class="kompetenz-liste" id="kompetenz-liste"></div>
+</div>
+
+<div class="abgabe-card" id="abgabe-hinweis">
+  <strong>📎 Vergiss nicht:</strong> Nach einem bestandenen Test kannst du auf der Ergebnisseite eine Datei herunterladen und bei IServ hochladen – damit weiß deine Lehrerin, was du schon kannst.
+</div>
+
+<div class="test-container versteckt" id="test-container">
+  <div class="test-card" id="test-card">
+    <div class="test-header">
+      <span class="test-title" id="test-titel">Kompetenz 1</span>
+      <span class="fortschritt" id="fortschritt-text">Frage 1 von 3</span>
+      <button onclick="zurueckZurLandkarte()" style="padding:4px 10px;background:none;border:1px solid #ccc;border-radius:6px;font-family:'Nunito',sans-serif;font-size:0.8rem;color:var(--muted);cursor:pointer;">✕ Abbrechen</button>
+    </div>
+    <div id="kontext-box-wrapper"></div>
+    <div class="frage-text" id="frage-text"></div>
+    <div class="wertetabelle-wrapper" id="tabelle-wrapper"></div>
+    <div class="antworten" id="antworten"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="weiter-btn" id="weiter-btn" onclick="naechsteFrage()">Weiter →</button>
+  </div>
+  <div class="ergebnis-card" id="ergebnis-card">
+    <div class="ergebnis-emoji" id="ergebnis-emoji"></div>
+    <div class="ergebnis-score" id="ergebnis-score"></div>
+    <div class="ergebnis-titel" id="ergebnis-titel"></div>
+    <div class="ergebnis-text" id="ergebnis-text"></div>
+    <div class="btn-reihe">
+      <button class="nochmal-btn" onclick="nochmal()">Nochmal versuchen 🔄</button>
+      <button class="nochmal-btn" onclick="zurueckZurLandkarte()" style="background:var(--primary);color:white;">← Zur Übersicht</button>
+      <button class="download-btn versteckt" id="download-btn" onclick="ergebnisDownload()">📥 Datei herunterladen</button>
+    </div>
+    <p class="download-hinweis versteckt" id="download-hinweis">Lade diese Datei bei IServ hoch, damit deine Lehrerin deinen Fortschritt sehen kann.</p>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let schuelerName = '';
+let lernstand = {};
+let versuche   = {};
+let aktiveKompetenz = null;
+let aktuelleRunde   = [];
+let aktuellerIndex  = 0;
+let richtigCount    = 0;
+let geantwortet     = false;
+let devKlicks = 0;
+let devKlickTimer = null;
+let devMode = false;
+
+// ─── KOMPETENZEN ─────────────────────────────────────────────────────────────
+const kompetenzen = [
+  // Block I
+  { id: 'I_1', block: 'I', schlagwort: 'Form f(x) = mx + c',      text: 'Ich weiß, dass eine lineare Funktion die Form f(x) = mx + c hat, wobei m die Steigung und c der y-Achsenabschnitt ist.' },
+  { id: 'I_2', block: 'I', schlagwort: 'm und c ablesen',          text: 'Ich kann m und c aus einer gegebenen Funktionsgleichung ablesen.' },
+  { id: 'I_3', block: 'I', schlagwort: 'y-Achsenabschnitt',        text: 'Ich kann erklären, was der y-Achsenabschnitt c geometrisch bedeutet: Die Gerade schneidet die y-Achse im Punkt P(0|c).' },
+  { id: 'I_4', block: 'I', schlagwort: 'c = 0: Ursprungsgerade',   text: 'Ich kann erklären, was passiert, wenn c = 0 ist (proportionale Funktion, Ursprungsgerade).' },
+  { id: 'I_5', block: 'I', schlagwort: 'm = 0: waagerechte Gerade', text: 'Ich kann erklären, was passiert, wenn m = 0 ist (waagerechte Gerade, f(x) = c).' },
+  { id: 'I_6', block: 'I', schlagwort: 'Proportional ⊂ Linear',    text: 'Ich weiß, dass jede proportionale Funktion eine lineare Funktion ist, aber nicht umgekehrt.' },
+  // Block II
+  { id: 'II_1', block: 'II', schlagwort: 'Funktionswert berechnen', text: 'Ich kann zu einem gegebenen x-Wert den zugehörigen Funktionswert berechnen.' },
+  { id: 'II_2', block: 'II', schlagwort: 'Punktprobe',              text: 'Ich kann prüfen, ob ein gegebener Punkt auf dem Graphen einer linearen Funktion liegt (Punktprobe).' },
+  { id: 'II_3', block: 'II', schlagwort: 'x-Wert zu f(x) bestimmen', text: 'Ich kann zu einem gegebenen Funktionswert den zugehörigen x-Wert bestimmen.' },
+  { id: 'II_4', block: 'II', schlagwort: 'Nullstelle bestimmen',    text: 'Ich kann die Nullstelle einer linearen Funktion bestimmen und als Punkt S(x₀|0) angeben.' },
+  // Block III
+  { id: 'III_1', block: 'III', schlagwort: 'Graphen zeichnen',      text: 'Ich kann den Graphen einer linearen Funktion zeichnen: y-Achsenabschnitt markieren und Steigungsdreieck anwenden.' },
+  { id: 'III_2', block: 'III', schlagwort: 'Steigungsdreieck',      text: 'Ich kann die Steigung m als Bruch schreiben und das Steigungsdreieck korrekt einzeichnen und beschriften.' },
+  // Block IV
+  { id: 'IV_1', block: 'IV', schlagwort: 'Gleichung aus Graph',     text: 'Ich kann aus einem gegebenen Graphen die Gleichung f(x) = mx + c bestimmen.' },
+  { id: 'IV_2', block: 'IV', schlagwort: 'Gleichung aus m und P',   text: 'Ich kann die Gleichung bestimmen, wenn Steigung m und ein Punkt P gegeben sind.' },
+  { id: 'IV_3', block: 'IV', schlagwort: 'Gleichung aus zwei Punkten', text: 'Ich kann die Gleichung bestimmen, wenn zwei Punkte gegeben sind (m aus Differenzquotient, dann c).' },
+  // Block V
+  { id: 'V_1', block: 'V', schlagwort: 'Graph auslesen',            text: 'Ich kann einen Graphen in einer Sachsituation auslesen: zu einem x-Wert den Funktionswert ablesen und umgekehrt.' },
+  { id: 'V_2', block: 'V', schlagwort: 'm und c im Sachkontext',    text: 'Ich kann m und c einer linearen Funktion im Sachkontext inhaltlich deuten (z. B. m als Zuwachs pro Zeiteinheit, c als Startwert).' },
+  { id: 'V_3', block: 'V', schlagwort: 'Gleichung aufstellen',      text: 'Ich kann aus einer Sachsituation die Funktionsgleichung selbst aufstellen.' },
+  // Block VI
+  { id: 'VI_1', block: 'VI', schlagwort: 'Streudiagramm',           text: 'Ich kann Datenpunkte aus einem Experiment in ein Koordinatensystem einzeichnen (Streudiagramm).' },
+  { id: 'VI_2', block: 'VI', schlagwort: 'Ausgleichsgerade',        text: 'Ich kann eine Ausgleichsgerade durch Datenpunkte legen und ihre Gleichung bestimmen.' },
+];
+
+const blockLabels = { I:'I Grundbegriffe', II:'II Rechnen', III:'III Graphen zeichnen', IV:'IV Gleichung bestimmen', V:'V Sachsituationen', VI:'VI Regressionsgerade' };
+const bonusBlocks = new Set(['VI']);
+
+// ─── AUFGABEN-POOL ────────────────────────────────────────────────────────────
+const aufgabenPool = {
+
+  // ── BLOCK I ──────────────────────────────────────────────────────────────
+
+  'I_1': [
+    { format: 'mc', frage: 'Welche der folgenden Gleichungen beschreibt eine <strong>lineare Funktion</strong>?',
+      optionen: ['f(x) = 3x + 5', 'f(x) = x²', 'f(x) = 3/x', 'f(x) = x² + 2x'],
+      richtig: 0, erklaerung: 'f(x) = 3x + 5 hat die Form mx + c mit m = 3 und c = 5. Die anderen enthalten x² oder x im Nenner.' },
+    { format: 'mc', frage: 'Was bedeutet das <strong>m</strong> in der Gleichung f(x) = mx + c?',
+      optionen: ['Die Steigung der Geraden', 'Der y-Achsenabschnitt', 'Der x-Wert des Schnittpunkts mit der x-Achse', 'Die Länge der Geraden'],
+      richtig: 0, erklaerung: 'm ist die Steigung – sie gibt an, wie stark die Gerade steigt oder fällt.' },
+    { format: 'mc', frage: 'Was bedeutet das <strong>c</strong> in der Gleichung f(x) = mx + c?',
+      optionen: ['Der y-Achsenabschnitt', 'Die Steigung', 'Die Nullstelle', 'Der x-Wert bei y = 0'],
+      richtig: 0, erklaerung: 'c ist der y-Achsenabschnitt – die Gerade schneidet die y-Achse im Punkt P(0|c).' },
+    { format: 'mc', frage: 'Welche Form hat die Gleichung einer linearen Funktion?',
+      optionen: ['f(x) = mx + c', 'f(x) = mx²', 'f(x) = m/x + c', 'f(x) = c · xm'],
+      richtig: 0, erklaerung: 'Die Standardform ist f(x) = mx + c mit Steigung m und y-Achsenabschnitt c.' },
+    { format: 'mc', frage: 'Eine Gerade hat die Gleichung f(x) = −2x + 7. Welche Aussage stimmt?',
+      optionen: ['Die Steigung ist −2 und der y-Achsenabschnitt ist 7', 'Die Steigung ist 7 und der y-Achsenabschnitt ist −2', 'Die Steigung ist 2 und der y-Achsenabschnitt ist −7', 'Es ist keine lineare Funktion'],
+      richtig: 0, erklaerung: 'm = −2 ist die Steigung (fällt), c = 7 ist der y-Achsenabschnitt.' },
+  ],
+
+  'I_2': [
+    { format: 'freitext', frage: 'Lies die Steigung m ab: f(x) = <strong>4</strong>x − 3',
+      richtig: ['4'], erklaerung: 'm ist der Koeffizient vor x. Hier steht 4x, also m = 4.' },
+    { format: 'freitext', frage: 'Lies den y-Achsenabschnitt c ab: f(x) = 2x + <strong>?</strong>  →  f(x) = 2x − 5',
+      richtig: ['-5', '−5'], erklaerung: 'c ist die Zahl, die zu mx addiert wird. Hier −5, also c = −5.' },
+    { format: 'freitext', frage: 'Lies die Steigung m ab: f(x) = −3x + 1',
+      richtig: ['-3', '−3'], erklaerung: 'm = −3. Das Minus gehört zur Steigung – die Gerade fällt.' },
+    { format: 'freitext', frage: 'Lies den y-Achsenabschnitt c ab: f(x) = ½x',
+      richtig: ['0'], erklaerung: 'Kein c steht da – das bedeutet c = 0. Es ist eine Ursprungsgerade.' },
+    { format: 'freitext', frage: 'Lies die Steigung ab: f(x) = −x + 4',
+      richtig: ['-1', '−1'], erklaerung: '−x bedeutet −1 · x, also m = −1.' },
+    { format: 'mc', frage: 'f(x) = ¾x − 2. Welche Werte haben m und c?',
+      optionen: ['m = ¾ und c = −2', 'm = −2 und c = ¾', 'm = ¾ und c = 2', 'm = −¾ und c = −2'],
+      richtig: 0, erklaerung: 'Der Koeffizient vor x ist m = ¾. Die addierte Zahl ist c = −2.' },
+  ],
+
+  'I_3': [
+    { format: 'mc', frage: 'Was bedeutet es geometrisch, dass c = 5 ist?',
+      optionen: ['Die Gerade schneidet die y-Achse im Punkt P(0|5)', 'Die Gerade schneidet die x-Achse im Punkt (5|0)', 'Die Steigung beträgt 5', 'Die Gerade geht durch den Ursprung'],
+      richtig: 0, erklaerung: 'c ist der y-Achsenabschnitt. P(0|c) = P(0|5) liegt auf der y-Achse.' },
+    { format: 'mc', frage: 'Zwei Geraden haben die Gleichungen f(x) = 2x + 3 und g(x) = −x + 3. Wo schneiden sie beide die y-Achse?',
+      optionen: ['Beide im Punkt P(0|3)', 'f bei P(0|2), g bei P(0|−1)', 'f bei P(0|3), g bei P(0|−1)', 'Beide im Ursprung'],
+      richtig: 0, erklaerung: 'Beide haben c = 3. Daher schneiden beide die y-Achse in P(0|3).' },
+    { format: 'mc', frage: 'f(x) = −4x + 1. In welchem Punkt schneidet die Gerade die y-Achse?',
+      optionen: ['P(0|1)', 'P(1|0)', 'P(0|−4)', 'P(−4|1)'],
+      richtig: 0, erklaerung: 'c = 1, also ist der y-Achsenschnittpunkt P(0|1).' },
+    { format: 'mc', frage: 'Was gibt der y-Achsenabschnitt c an?',
+      optionen: ['Den y-Wert der Geraden bei x = 0', 'Den x-Wert der Geraden bei y = 0', 'Die Steigung der Geraden', 'Den Mittelpunkt der Geraden'],
+      richtig: 0, erklaerung: 'c = f(0): Wenn man x = 0 einsetzt, ergibt sich genau c.' },
+  ],
+
+  'I_4': [
+    { format: 'mc', frage: 'Was ist eine Ursprungsgerade?',
+      optionen: ['Eine Gerade mit c = 0, die durch den Ursprung (0|0) geht', 'Eine Gerade mit m = 0', 'Eine Gerade mit negativer Steigung', 'Eine Gerade, die durch den Punkt (1|1) geht'],
+      richtig: 0, erklaerung: 'Wenn c = 0 ist, hat die Gerade die Form f(x) = mx. Sie geht durch den Ursprung.' },
+    { format: 'mc', frage: 'f(x) = 3x. Welche Aussage stimmt?',
+      optionen: ['c = 0, also ist es eine proportionale Funktion / Ursprungsgerade', 'm = 0, also ist es eine waagerechte Gerade', 'Es ist keine lineare Funktion', 'Die Gerade schneidet die y-Achse bei y = 3'],
+      richtig: 0, erklaerung: 'f(x) = 3x ist dasselbe wie f(x) = 3x + 0. c = 0 → Ursprungsgerade, proportionale Funktion.' },
+    { format: 'mc', frage: 'Welche der folgenden Gleichungen beschreibt eine <strong>proportionale Funktion</strong>?',
+      optionen: ['f(x) = −5x', 'f(x) = 2x + 1', 'f(x) = 3', 'f(x) = x + 3'],
+      richtig: 0, erklaerung: 'Eine proportionale Funktion hat die Form f(x) = mx (also c = 0). Nur −5x hat kein c.' },
+  ],
+
+  'I_5': [
+    { format: 'mc', frage: 'f(x) = 4. Was beschreibt diese Funktion?',
+      optionen: ['Eine waagerechte Gerade bei y = 4 (m = 0)', 'Eine Gerade mit Steigung 4', 'Eine Ursprungsgerade', 'Keine Funktion'],
+      richtig: 0, erklaerung: 'Wenn m = 0 ist, gibt es keine Steigung. Die Gerade ist waagerecht auf Höhe y = 4.' },
+    { format: 'mc', frage: 'Was gilt für die Steigung m, wenn eine Gerade waagerecht ist?',
+      optionen: ['m = 0', 'm = 1', 'm ist sehr groß', 'm ist nicht definiert'],
+      richtig: 0, erklaerung: 'Waagerecht bedeutet: für jede x-Änderung ist die y-Änderung 0. Also m = 0.' },
+    { format: 'mc', frage: 'Welche Gleichung beschreibt eine waagerechte Gerade bei y = −2?',
+      optionen: ['f(x) = −2', 'f(x) = −2x', 'f(x) = x − 2', 'f(x) = −2x − 2'],
+      richtig: 0, erklaerung: 'f(x) = −2 ist dasselbe wie f(x) = 0 · x + (−2). Waagerecht, y-Wert immer −2.' },
+  ],
+
+  'I_6': [
+    { format: 'mc', frage: 'Welche Aussage ist richtig?',
+      optionen: ['Jede proportionale Funktion ist linear, aber nicht jede lineare Funktion ist proportional.', 'Jede lineare Funktion ist proportional.', 'Proportionale und lineare Funktionen sind dasselbe.', 'Proportionale Funktionen sind keine linearen Funktionen.'],
+      richtig: 0, erklaerung: 'Proportionale Funktionen (c = 0) sind ein Spezialfall linearer Funktionen. Umgekehrt gilt das nicht.' },
+    { format: 'mc', frage: 'f(x) = 2x + 1. Ist das eine proportionale Funktion?',
+      optionen: ['Nein, weil c = 1 ≠ 0', 'Ja, weil m = 2', 'Ja, weil sie linear ist', 'Nein, weil m = 2'],
+      richtig: 0, erklaerung: 'Proportionale Funktionen haben c = 0. Hier ist c = 1, also keine proportionale Funktion – nur eine lineare.' },
+    { format: 'mc', frage: 'g(x) = −3x. Welche der folgenden Aussagen sind beide richtig?',
+      optionen: ['g ist sowohl proportional als auch linear', 'g ist nur proportional, nicht linear', 'g ist nur linear, nicht proportional', 'g ist weder proportional noch linear'],
+      richtig: 0, erklaerung: 'c = 0 → proportionale Funktion. Und jede proportionale Funktion ist auch eine lineare.' },
+  ],
+
+  // ── BLOCK II ─────────────────────────────────────────────────────────────
+
+  'II_1': [
+    { format: 'freitext', frage: 'f(x) = 3x − 1. Berechne f(2).', richtig: ['5'], erklaerung: 'f(2) = 3 · 2 − 1 = 6 − 1 = 5.' },
+    { format: 'freitext', frage: 'f(x) = −2x + 4. Berechne f(3).', richtig: ['-2', '−2'], erklaerung: 'f(3) = −2 · 3 + 4 = −6 + 4 = −2.' },
+    { format: 'freitext', frage: 'f(x) = ½x + 3. Berechne f(6).', richtig: ['6'], erklaerung: 'f(6) = ½ · 6 + 3 = 3 + 3 = 6.' },
+    { format: 'freitext', frage: 'f(x) = 4x. Berechne f(−2).', richtig: ['-8', '−8'], erklaerung: 'f(−2) = 4 · (−2) = −8.' },
+    { format: 'freitext', frage: 'f(x) = −x + 5. Berechne f(0).', richtig: ['5'], erklaerung: 'f(0) = −0 + 5 = 5. Das ist der y-Achsenabschnitt.' },
+    { format: 'freitext', frage: 'f(x) = 2x − 7. Berechne f(1).', richtig: ['-5', '−5'], erklaerung: 'f(1) = 2 · 1 − 7 = 2 − 7 = −5.' },
+  ],
+
+  'II_2': [
+    { format: 'mc', kontext: 'f(x) = 2x − 1. Liegt der Punkt P(3|5) auf dem Graphen?',
+      frage: 'Führe die Punktprobe durch. Was gilt?',
+      optionen: ['Ja: f(3) = 5 ✓', 'Nein: f(3) = 7', 'Nein: f(3) = 4', 'Ja: f(5) = 3 ✓'],
+      richtig: 0, erklaerung: 'f(3) = 2·3 − 1 = 6 − 1 = 5. Da f(3) = 5 = y-Koordinate von P, liegt P auf dem Graphen.' },
+    { format: 'mc', kontext: 'f(x) = −x + 4. Liegt der Punkt Q(2|3) auf dem Graphen?',
+      frage: 'Führe die Punktprobe durch.',
+      optionen: ['Nein: f(2) = 2, nicht 3', 'Ja: f(2) = 3 ✓', 'Ja: f(3) = 2 ✓', 'Nein: f(4) = 0, nicht 3'],
+      richtig: 0, erklaerung: 'f(2) = −2 + 4 = 2. Da f(2) = 2 ≠ 3, liegt Q nicht auf dem Graphen.' },
+    { format: 'mc', kontext: 'f(x) = 3x + 1. Welcher Punkt liegt auf dem Graphen?',
+      frage: 'Überprüfe alle Punkte.',
+      optionen: ['P(2|7)', 'Q(3|8)', 'R(1|5)', 'S(0|3)'],
+      richtig: 0, erklaerung: 'f(2) = 6 + 1 = 7 ✓. f(3) = 10 ≠ 8. f(1) = 4 ≠ 5. f(0) = 1 ≠ 3.' },
+    { format: 'mc', kontext: 'f(x) = ½x − 2. Liegt P(4|0) auf dem Graphen?',
+      frage: 'Führe die Punktprobe durch.',
+      optionen: ['Ja: f(4) = 0 ✓', 'Nein: f(4) = 4', 'Nein: f(0) = 4', 'Ja: f(0) = −2 ✓'],
+      richtig: 0, erklaerung: 'f(4) = ½ · 4 − 2 = 2 − 2 = 0. y-Koordinate von P ist auch 0 → P liegt auf dem Graphen.' },
+  ],
+
+  'II_3': [
+    { format: 'freitext', frage: 'f(x) = 2x − 6. Zu welchem x-Wert gehört der Funktionswert f(x) = 4?<br><em style="font-weight:600;color:var(--muted)">Löse: 2x − 6 = 4</em>', richtig: ['5'], erklaerung: '2x = 10 → x = 5. Probe: f(5) = 10 − 6 = 4 ✓' },
+    { format: 'freitext', frage: 'f(x) = −x + 3. Zu welchem x-Wert gehört f(x) = 0?<br><em style="font-weight:600;color:var(--muted)">Löse: −x + 3 = 0</em>', richtig: ['3'], erklaerung: '−x = −3 → x = 3. Probe: f(3) = −3 + 3 = 0 ✓' },
+    { format: 'freitext', frage: 'f(x) = 3x + 3. Zu welchem x-Wert gehört f(x) = 12?<br><em style="font-weight:600;color:var(--muted)">Löse: 3x + 3 = 12</em>', richtig: ['3'], erklaerung: '3x = 9 → x = 3. Probe: f(3) = 9 + 3 = 12 ✓' },
+    { format: 'freitext', frage: 'f(x) = 4x − 2. Zu welchem x-Wert gehört f(x) = 6?', richtig: ['2'], erklaerung: '4x = 8 → x = 2. Probe: f(2) = 8 − 2 = 6 ✓' },
+    { format: 'freitext', frage: 'f(x) = −2x + 1. Zu welchem x-Wert gehört f(x) = −5?', richtig: ['3'], erklaerung: '−2x = −6 → x = 3. Probe: f(3) = −6 + 1 = −5 ✓' },
+  ],
+
+  'II_4': [
+    { format: 'freitext', frage: 'Berechne die Nullstelle: f(x) = 2x − 6<br><em style="font-weight:600;color:var(--muted)">Löse: 2x − 6 = 0</em>', richtig: ['3'], erklaerung: '2x = 6 → x = 3. Nullstelle: S(3|0).' },
+    { format: 'freitext', frage: 'Berechne die Nullstelle: f(x) = −3x + 9', richtig: ['3'], erklaerung: '−3x = −9 → x = 3. Nullstelle: S(3|0).' },
+    { format: 'freitext', frage: 'Berechne die Nullstelle: f(x) = x + 4<br><em style="font-weight:600;color:var(--muted)">Löse: x + 4 = 0</em>', richtig: ['-4', '−4'], erklaerung: 'x = −4. Nullstelle: S(−4|0).' },
+    { format: 'freitext', frage: 'Berechne die Nullstelle: f(x) = 2x + 5', richtig: ['-2,5', '-5/2', '-2.5', '−2,5', '−2.5'], erklaerung: '2x = −5 → x = −2,5. Nullstelle: S(−2,5|0).' },
+    { format: 'mc', frage: 'Wo liegt die Nullstelle einer linearen Funktion?',
+      optionen: ['Auf der x-Achse (y = 0)', 'Auf der y-Achse (x = 0)', 'Im Ursprung', 'Bei x = m'],
+      richtig: 0, erklaerung: 'Die Nullstelle ist der Punkt, an dem der Graph die x-Achse schneidet. Dort ist y = 0.' },
+  ],
+
+  // ── BLOCK III ────────────────────────────────────────────────────────────
+
+  'III_1': [
+    { format: 'mc', frage: 'Du willst f(x) = 2x + 3 zeichnen. Was ist der richtige erste Schritt?',
+      optionen: ['Den Punkt P(0|3) auf der y-Achse markieren', 'Den Punkt P(0|2) auf der y-Achse markieren', 'Den Ursprung markieren', 'Die Nullstelle berechnen'],
+      richtig: 0, erklaerung: 'c = 3, also ist P(0|3) der Startpunkt auf der y-Achse. Dann folgt das Steigungsdreieck.' },
+    { format: 'mc', frage: 'f(x) = −x + 2. Der y-Achsenabschnitt liegt bei …',
+      optionen: ['P(0|2)', 'P(2|0)', 'P(0|−1)', 'P(0|0)'],
+      richtig: 0, erklaerung: 'c = 2, also P(0|2). Von dort aus folgt das Steigungsdreieck mit m = −1.' },
+    { format: 'mc', frage: 'Du hast P(0|1) eingetragen und m = 3. Wie lautet das Steigungsdreieck?',
+      optionen: ['1 Schritt nach rechts, 3 nach oben', '3 Schritte nach rechts, 1 nach oben', '3 nach links, 1 nach oben', '1 nach links, 3 nach oben'],
+      richtig: 0, erklaerung: 'm = 3 = 3/1: 1 nach rechts, 3 nach oben (Zähler = Höhe, Nenner = Breite).' },
+    { format: 'mc', frage: 'f(x) = ½x − 1. Wie geht das Steigungsdreieck nach dem Startpunkt?',
+      optionen: ['2 nach rechts, 1 nach oben', '1 nach rechts, 2 nach oben', '2 nach rechts, 1 nach unten', '1 nach rechts, ½ nach oben'],
+      richtig: 0, erklaerung: 'm = ½ = 1/2: 2 nach rechts, 1 nach oben.' },
+  ],
+
+  'III_2': [
+    { format: 'mc', frage: 'Was beschreibt das Steigungsdreieck?',
+      optionen: ['Wie viele Einheiten man nach rechts und wie viele nach oben/unten geht', 'Den Abstand vom Ursprung zur Geraden', 'Den Winkel der Geraden zur x-Achse', 'Die Fläche unter der Geraden'],
+      richtig: 0, erklaerung: 'Steigungsdreieck: Nenner von m = Schritte nach rechts, Zähler von m = Schritte nach oben (positiv) oder unten (negativ).' },
+    { format: 'mc', frage: 'f(x) = −¾x + 2. Wie zeichnet man das Steigungsdreieck?',
+      optionen: ['4 nach rechts, 3 nach unten', '3 nach rechts, 4 nach unten', '4 nach rechts, 3 nach oben', '3 nach rechts, 4 nach oben'],
+      richtig: 0, erklaerung: 'm = −¾: Nenner 4 → 4 nach rechts. Zähler −3 → 3 nach unten.' },
+    { format: 'mc', frage: 'Eine Gerade geht 2 nach rechts und 5 nach oben. Was ist m?',
+      optionen: ['m = 5/2', 'm = 2/5', 'm = −5/2', 'm = 3'],
+      richtig: 0, erklaerung: 'Steigung = Höhe / Breite = 5/2. Nicht 2/5 – der häufigste Fehler!' },
+    { format: 'mc', frage: 'Was bedeutet eine negative Steigung beim Steigungsdreieck?',
+      optionen: ['Man geht nach rechts und nach unten', 'Man geht nach links und nach oben', 'Man geht nach links und nach unten', 'Man geht gar nicht nach rechts'],
+      richtig: 0, erklaerung: 'Negatives m: nach rechts, aber nach unten (die Gerade fällt).' },
+  ],
+
+  // ── BLOCK IV ─────────────────────────────────────────────────────────────
+
+  'IV_1': [
+    { format: 'mc', frage: 'Aus einem Graphen liest du ab: Die Gerade schneidet die y-Achse bei 2 und steigt um 3 pro Einheit nach rechts. Welche Gleichung hat sie?',
+      optionen: ['f(x) = 3x + 2', 'f(x) = 2x + 3', 'f(x) = 3x − 2', 'f(x) = 2x − 3'],
+      richtig: 0, erklaerung: 'c = 2 (y-Achsenabschnitt), m = 3 (Steigung) → f(x) = 3x + 2.' },
+    { format: 'mc', frage: 'Ein Graph schneidet die y-Achse bei −1. Das Steigungsdreieck zeigt: 2 nach rechts, 1 nach oben. Welche Gleichung?',
+      optionen: ['f(x) = ½x − 1', 'f(x) = 2x − 1', 'f(x) = ½x + 1', 'f(x) = −½x − 1'],
+      richtig: 0, erklaerung: 'm = 1/2 (1 hoch, 2 rechts), c = −1 → f(x) = ½x − 1.' },
+    { format: 'mc', frage: 'Ein Graph fällt und schneidet die y-Achse bei 4. Steigungsdreieck: 1 nach rechts, 2 nach unten. Welche Gleichung?',
+      optionen: ['f(x) = −2x + 4', 'f(x) = 2x + 4', 'f(x) = −½x + 4', 'f(x) = −2x − 4'],
+      richtig: 0, erklaerung: 'm = −2/1 = −2 (2 runter, 1 rechts), c = 4 → f(x) = −2x + 4.' },
+  ],
+
+  'IV_2': [
+    { format: 'mc', frage: 'Gegeben: m = 2 und P(3|7). Welche Gleichung hat die Gerade?',
+      optionen: ['f(x) = 2x + 1', 'f(x) = 2x + 7', 'f(x) = 2x − 7', 'f(x) = 2x + 3'],
+      richtig: 0, erklaerung: '7 = 2·3 + c → 7 = 6 + c → c = 1. Also f(x) = 2x + 1.' },
+    { format: 'mc', frage: 'Gegeben: m = −1 und P(2|4). Welche Gleichung?',
+      optionen: ['f(x) = −x + 6', 'f(x) = −x + 4', 'f(x) = −x − 6', 'f(x) = −x + 2'],
+      richtig: 0, erklaerung: '4 = −1·2 + c → 4 = −2 + c → c = 6. Also f(x) = −x + 6.' },
+    { format: 'mc', frage: 'Gegeben: m = 3 und P(0|−2). Welche Gleichung?',
+      optionen: ['f(x) = 3x − 2', 'f(x) = 3x + 2', 'f(x) = −2x + 3', 'f(x) = 3x'],
+      richtig: 0, erklaerung: 'P(0|−2) liegt auf der y-Achse → c = −2 direkt. Also f(x) = 3x − 2.' },
+  ],
+
+  'IV_3': [
+    { format: 'mc', frage: 'Gegeben: A(0|1) und B(2|5). Welche Gleichung?',
+      optionen: ['f(x) = 2x + 1', 'f(x) = 2x − 1', 'f(x) = ½x + 1', 'f(x) = 4x + 1'],
+      richtig: 0, erklaerung: 'm = (5−1)/(2−0) = 4/2 = 2. c: A liegt auf y-Achse → c = 1. Also f(x) = 2x + 1.' },
+    { format: 'mc', frage: 'Gegeben: P(1|3) und Q(3|7). Berechne m.',
+      optionen: ['m = 2', 'm = 4', 'm = ½', 'm = 3'],
+      richtig: 0, erklaerung: 'm = (7−3)/(3−1) = 4/2 = 2. Differenzquotient: Δy/Δx.' },
+    { format: 'mc', frage: 'Gegeben: P(2|1) und Q(4|−3). Welche Gleichung?',
+      optionen: ['f(x) = −2x + 5', 'f(x) = 2x − 3', 'f(x) = −2x − 5', 'f(x) = −2x + 1'],
+      richtig: 0, erklaerung: 'm = (−3−1)/(4−2) = −4/2 = −2. Einsetzen: 1 = −2·2 + c → c = 5. Also f(x) = −2x + 5.' },
+  ],
+
+  // ── BLOCK V ──────────────────────────────────────────────────────────────
+
+  'V_1': [
+    { format: 'mc', kontext: 'Ein Taxifahrer berechnet: f(x) = 2x + 3 (x = gefahrene km, f(x) = Preis in €).',
+      frage: 'Was kostet eine Fahrt von 5 km?',
+      optionen: ['13 €', '10 €', '8 €', '15 €'],
+      richtig: 0, erklaerung: 'f(5) = 2·5 + 3 = 10 + 3 = 13 €.' },
+    { format: 'mc', kontext: 'Eine Kerze brennt ab: f(x) = −2x + 20 (x = Zeit in h, f(x) = Länge in cm).',
+      frage: 'Nach wie vielen Stunden ist die Kerze 10 cm lang?',
+      optionen: ['5 h', '10 h', '15 h', '20 h'],
+      richtig: 0, erklaerung: '−2x + 20 = 10 → −2x = −10 → x = 5 h.' },
+    { format: 'mc', kontext: 'f(x) = 3x + 6. x steht für Monate, f(x) für gespartes Geld in €.',
+      frage: 'Was bedeutet c = 6 in diesem Kontext?',
+      optionen: ['6 € waren schon zu Beginn gespart (Startwert)', '6 € werden pro Monat gespart', 'Nach 6 Monaten ist das Konto leer', 'Man spart 6 € weniger pro Monat'],
+      richtig: 0, erklaerung: 'c ist der Startwert (bei x = 0). Hier 6 € Startkapital.' },
+  ],
+
+  'V_2': [
+    { format: 'mc', kontext: 'f(x) = 50x + 200. x = Arbeitsstunden, f(x) = Gesamtkosten einer Reparatur in €.',
+      frage: 'Was bedeutet m = 50 in diesem Kontext?',
+      optionen: ['Pro Arbeitsstunde kostet es 50 € mehr', 'Die Reparatur beginnt bei 50 €', 'Nach 50 Stunden ist die Reparatur fertig', '50 € sind die Materialkosten'],
+      richtig: 0, erklaerung: 'm ist die Steigung = Zuwachs pro Einheit. Hier: 50 € pro Arbeitsstunde.' },
+    { format: 'mc', kontext: 'f(x) = −3x + 60. x = Verbrauchte Liter Benzin, f(x) = verbleibende Liter im Tank.',
+      frage: 'Was bedeutet c = 60 in diesem Kontext?',
+      optionen: ['Der Tank war zu Beginn mit 60 Litern gefüllt', 'Pro Kilometer werden 60 Liter verbraucht', 'Bei 60 km ist der Tank leer', 'Der Tank fasst maximal 60 Liter pro Stunde'],
+      richtig: 0, erklaerung: 'c = f(0) = 60. Bei x = 0 (Beginn) sind 60 Liter im Tank.' },
+    { format: 'mc', kontext: 'f(x) = 4x + 10. x = Tage, f(x) = Anzahl der Pflanzen in einem Garten.',
+      frage: 'Was bedeutet m = 4 in diesem Kontext?',
+      optionen: ['Jeden Tag kommen 4 neue Pflanzen hinzu', 'Am Anfang stehen 4 Pflanzen', 'Nach 4 Tagen sind 10 Pflanzen gewachsen', 'Jeden Tag sterben 4 Pflanzen'],
+      richtig: 0, erklaerung: 'm = 4: Pro Tag (Δx = 1) wächst die Anzahl um 4.' },
+  ],
+
+  'V_3': [
+    { format: 'mc', kontext: 'Ein Handwerker verlangt 40 € Anfahrtsgebühr und 30 € pro Stunde Arbeit.',
+      frage: 'Welche Funktionsgleichung beschreibt die Gesamtkosten f(x) in Abhängigkeit von der Stundenanzahl x?',
+      optionen: ['f(x) = 30x + 40', 'f(x) = 40x + 30', 'f(x) = 30x − 40', 'f(x) = 70x'],
+      richtig: 0, erklaerung: 'm = 30 (Kosten pro Stunde), c = 40 (Anfahrt = Startwert). → f(x) = 30x + 40.' },
+    { format: 'mc', kontext: 'Eine Badewanne enthält 120 Liter. Pro Minute laufen 8 Liter ab.',
+      frage: 'Welche Gleichung beschreibt den Füllstand f(x) nach x Minuten?',
+      optionen: ['f(x) = −8x + 120', 'f(x) = 8x + 120', 'f(x) = −8x − 120', 'f(x) = 120x − 8'],
+      richtig: 0, erklaerung: 'Startwert c = 120, Änderung pro Minute m = −8 (abnehmen). → f(x) = −8x + 120.' },
+    { format: 'mc', kontext: 'Ein Auto fährt gleichmäßig. Nach 2 Stunden hat es 130 km zurückgelegt, nach 5 Stunden 280 km.',
+      frage: 'Welche Durchschnittsgeschwindigkeit hat das Auto (= Steigung m)?',
+      optionen: ['m = 50 km/h', 'm = 130 km/h', 'm = 65 km/h', 'm = 45 km/h'],
+      richtig: 0, erklaerung: 'm = (280−130)/(5−2) = 150/3 = 50 km/h.' },
+  ],
+
+  // ── BLOCK VI ─────────────────────────────────────────────────────────────
+
+  'VI_1': [
+    { format: 'mc', frage: 'Was ist ein Streudiagramm?',
+      optionen: ['Ein Koordinatensystem, in das Datenpunkte eingetragen werden', 'Ein Balkendiagramm mit Streuung', 'Ein Diagramm, das Durchschnittswerte zeigt', 'Eine Tabelle mit zufälligen Daten'],
+      richtig: 0, erklaerung: 'Im Streudiagramm werden die Messpunkte (x|y) als Punkte ins Koordinatensystem eingetragen – ohne sie zu verbinden.' },
+    { format: 'mc', frage: 'Was ist eine Ausgleichsgerade?',
+      optionen: ['Eine Gerade, die möglichst gut durch die Datenpunkte verläuft', 'Eine Gerade, die durch alle Punkte verläuft', 'Der Durchschnitt aller y-Werte', 'Eine waagerechte Hilfslinie'],
+      richtig: 0, erklaerung: 'Die Ausgleichsgerade (Regressionsgerade) beschreibt den Trend der Datenpunkte. Sie muss nicht durch alle Punkte gehen.' },
+  ],
+
+  'VI_2': [
+    { format: 'mc', frage: 'Zwei Punkte liegen gut auf der Ausgleichsgeraden: (0|5) und (4|13). Welche Gleichung hat die Ausgleichsgerade?',
+      optionen: ['f(x) = 2x + 5', 'f(x) = 4x + 5', 'f(x) = 2x + 13', 'f(x) = ½x + 5'],
+      richtig: 0, erklaerung: 'm = (13−5)/(4−0) = 8/4 = 2. P(0|5) → c = 5. Also f(x) = 2x + 5.' },
+    { format: 'mc', frage: 'Du hast eine Ausgleichsgerade eingezeichnet. Sie schneidet die y-Achse bei 3 und das Steigungsdreieck zeigt 5 rechts, 10 hoch. Welche Gleichung?',
+      optionen: ['f(x) = 2x + 3', 'f(x) = ½x + 3', 'f(x) = 5x + 3', 'f(x) = 2x − 3'],
+      richtig: 0, erklaerung: 'm = 10/5 = 2. c = 3. Also f(x) = 2x + 3.' },
+  ],
+};
+
+// ─── HILFSFUNKTIONEN ─────────────────────────────────────────────────────────
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function zufaelligeAuswahl(pool) {
+  const mc = shuffle(pool.filter(a => a.format === 'mc'));
+  const ft = shuffle(pool.filter(a => a.format === 'freitext'));
+  if (mc.length >= 3) return shuffle([mc[0], mc[1], ft[0] || mc[2]].filter(Boolean)).slice(0, 3);
+  if (ft.length >= 2)  return shuffle([ft[0], ft[1], mc[0]].filter(Boolean)).slice(0, 3);
+  return shuffle(pool).slice(0, Math.min(3, pool.length));
+}
+
+// ─── SPEICHERN / LADEN ────────────────────────────────────────────────────────
+
+function speichern() {
+  try {
+    localStorage.setItem('linfkt8_name',      schuelerName);
+    localStorage.setItem('linfkt8_lernstand', JSON.stringify(lernstand));
+    localStorage.setItem('linfkt8_versuche',  JSON.stringify(versuche));
+  } catch(e) {}
+}
+
+function laden() {
+  try {
+    const n = localStorage.getItem('linfkt8_name');
+    const l = localStorage.getItem('linfkt8_lernstand');
+    const v = localStorage.getItem('linfkt8_versuche');
+    if (n) schuelerName = n;
+    if (l) lernstand = JSON.parse(l);
+    if (v) versuche   = JSON.parse(v);
+  } catch(e) {}
+}
+
+// ─── DEV-MODUS ────────────────────────────────────────────────────────────────
+
+function devModeKlick() {
+  devKlicks++;
+  clearTimeout(devKlickTimer);
+  devKlickTimer = setTimeout(() => { devKlicks = 0; }, 600);
+  if (devKlicks >= 3) {
+    devKlicks = 0;
+    devMode = !devMode;
+    const titel = document.getElementById('haupttitel');
+    titel.style.opacity = devMode ? '0.5' : '1';
+    baueLandkarte();
+  }
+}
+
+function freigeschalteteAnzahl() {
+  if (devMode) return kompetenzen.length;
+  const hauptKompetenzen = kompetenzen.filter(k => !bonusBlocks.has(k.block));
+  const fortschritt = hauptKompetenzen.filter(k =>
+    lernstand[k.id] === 'gruen' || (versuche[k.id] || 0) >= 3
+  ).length;
+  return Math.min(3 + fortschritt, hauptKompetenzen.length);
+}
+
+// ─── LANDKARTE ────────────────────────────────────────────────────────────────
+
+function loginBestaetigen() {
+  const input = document.getElementById('name-input').value.trim();
+  if (input.length < 2) { document.getElementById('name-input').style.borderColor = 'var(--red)'; return; }
+  schuelerName = input;
+  speichern();
+  zeigeHauptansicht();
+}
+
+function nameAendern() {
+  if (!confirm('Namen ändern?')) return;
+  localStorage.removeItem('linfkt8_name');
+  location.reload();
+}
+
+function zeigeHauptansicht() {
+  document.getElementById('login-card').classList.add('versteckt');
+  document.getElementById('name-anzeige').classList.remove('versteckt');
+  document.getElementById('name-text').textContent = schuelerName;
+  document.getElementById('landkarte').classList.remove('versteckt');
+  document.getElementById('abgabe-hinweis').classList.add('show');
+  baueLandkarte();
+}
+
+function baueLandkarte() {
+  const liste = document.getElementById('kompetenz-liste');
+  liste.innerHTML = '';
+  const maxOffen = freigeschalteteAnzahl();
+  let letzterBlock = null;
+  let bonusWrapper = null;
+
+  // Haupt-Kompetenzen
+  kompetenzen.filter(k => !bonusBlocks.has(k.block)).forEach((k, index) => {
+    const status  = lernstand[k.id] || null;
+    const hatTest = aufgabenPool[k.id] !== undefined && aufgabenPool[k.id].length > 0;
+    const offen   = index < maxOffen;
+
+    if (k.block !== letzterBlock) {
+      letzterBlock = k.block;
+      const header = document.createElement('div');
+      header.className = 'block-header block-' + k.block;
+      header.textContent = blockLabels[k.block] || ('Block ' + k.block);
+      liste.appendChild(header);
+    }
+
+    liste.appendChild(baueKompetenzItem(k, status, hatTest, offen));
+  });
+
+  // Bonus-Blöcke
+  const bonusKompetenzen = kompetenzen.filter(k => bonusBlocks.has(k.block));
+  if (bonusKompetenzen.length > 0) {
+    bonusWrapper = document.createElement('div');
+    bonusWrapper.className = 'block-bonus-wrapper';
+    const bonusLabel = document.createElement('div');
+    bonusLabel.className = 'block-bonus-label';
+    bonusLabel.innerHTML = '⭐ <span>Bonusaufgabe</span> – freiwillig, für alle die mehr wollen';
+    bonusWrapper.appendChild(bonusLabel);
+
+    bonusKompetenzen.forEach(k => {
+      const status  = lernstand[k.id] || null;
+      const hatTest = aufgabenPool[k.id] !== undefined && aufgabenPool[k.id].length > 0;
+      bonusWrapper.appendChild(baueKompetenzItem(k, status, hatTest, true));
+    });
+    liste.appendChild(bonusWrapper);
+  }
+}
+
+function baueKompetenzItem(k, status, hatTest, offen) {
+  const item = document.createElement('div');
+  item.className = 'kompetenz-item'
+    + (status === 'gruen' ? ' gruen' : status === 'gelb' ? ' gelb' : '')
+    + (!offen ? ' gesperrt' : '');
+  item.id = 'item-' + k.id;
+
+  const nr = document.createElement('span');
+  nr.className = 'kompetenz-nr';
+  nr.textContent = kompetenzen.indexOf(k) + 1;
+
+  const aufkleber = document.createElement('div');
+  aufkleber.className = 'aufkleber';
+  aufkleber.id = 'aufkleber-' + k.id;
+  aufkleber.textContent = status === 'gruen' ? '🟢' : status === 'gelb' ? '🟡' : (offen ? '?' : '🔒');
+
+  const textWrap = document.createElement('span');
+  textWrap.className = 'kompetenz-text';
+  const schlagwort = document.createElement('strong');
+  schlagwort.style.cssText = 'display:block;font-size:0.8rem;color:var(--primary);margin-bottom:2px;';
+  schlagwort.textContent = k.schlagwort + (!offen ? ' (kommt noch)' : '');
+  textWrap.appendChild(schlagwort);
+  if (offen) {
+    const text = document.createElement('span');
+    text.style.fontSize = '0.88rem';
+    text.textContent = k.text;
+    textWrap.appendChild(text);
+  }
+
+  item.appendChild(nr);
+  item.appendChild(aufkleber);
+  item.appendChild(textWrap);
+
+  if (hatTest && offen) {
+    const btn = document.createElement('button');
+    btn.className = 'test-starten-btn';
+    btn.textContent = status === 'gruen' ? '✓ Wiederholen' : 'Test starten';
+    btn.onclick = () => testStarten(k.id);
+    item.appendChild(btn);
+  }
+
+  return item;
+}
+
+// ─── TEST ─────────────────────────────────────────────────────────────────────
+
+function testStarten(kompetenzId) {
+  aktiveKompetenz = kompetenzId;
+  const pool = aufgabenPool[kompetenzId];
+  aktuelleRunde   = zufaelligeAuswahl(pool);
+  aktuellerIndex  = 0;
+  richtigCount    = 0;
+  const kNr = kompetenzen.findIndex(k => k.id === kompetenzId) + 1;
+  const k   = kompetenzen.find(k => k.id === kompetenzId);
+  document.getElementById('test-titel').textContent = k.schlagwort;
+  document.getElementById('landkarte').classList.add('versteckt');
+  document.getElementById('abgabe-hinweis').classList.remove('show');
+  document.getElementById('test-container').classList.remove('versteckt');
+  document.getElementById('test-card').style.display = 'block';
+  document.getElementById('ergebnis-card').className = 'ergebnis-card';
+  zeigeFrage();
+}
+
+function zeigeFrage() {
+  const aufgabe = aktuelleRunde[aktuellerIndex];
+  geantwortet   = false;
+  document.getElementById('fortschritt-text').textContent = `Frage ${aktuellerIndex + 1} von ${aktuelleRunde.length}`;
+
+  // Kontext-Box
+  const kbw = document.getElementById('kontext-box-wrapper');
+  kbw.innerHTML = '';
+  if (aufgabe.kontext) {
+    const kb = document.createElement('div');
+    kb.className = 'kontext-box';
+    kb.innerHTML = aufgabe.kontext;
+    kbw.appendChild(kb);
+  }
+
+  document.getElementById('frage-text').innerHTML = aufgabe.frage;
+  document.getElementById('tabelle-wrapper').innerHTML = '';
+  document.getElementById('antworten').innerHTML = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('weiter-btn').className = 'weiter-btn';
+
+  if (aufgabe.format === 'mc') {
+    renderMC(aufgabe);
+  } else if (aufgabe.format === 'freitext') {
+    renderFreitext(aufgabe);
+  }
+}
+
+function renderMC(aufgabe) {
+  const antworten = document.getElementById('antworten');
+  const gemischt  = aufgabe.optionen.map((_, i) => i).sort(() => Math.random() - 0.5);
+  const richtigNeu = gemischt.indexOf(aufgabe.richtig);
+  gemischt.forEach((origIdx, domPos) => {
+    const btn = document.createElement('button');
+    btn.className = 'antwort-btn';
+    btn.innerHTML = aufgabe.optionen[origIdx];
+    btn.onclick = function() { antwortenClick(domPos, aufgabe, richtigNeu); };
+    antworten.appendChild(btn);
+  });
+}
+
+function renderFreitext(aufgabe) {
+  const antworten = document.getElementById('antworten');
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.id   = 'freitext-input';
+  input.placeholder = 'Antwort eingeben…';
+  input.className = 'eingabe-feld';
+  input.style.cssText = 'flex:1;min-width:120px;padding:10px 14px;';
+  input.inputMode = 'decimal';
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') freitextPruefen(aufgabe); });
+
+  const btn = document.createElement('button');
+  btn.className = 'test-starten-btn';
+  btn.textContent = 'Prüfen';
+  btn.onclick = () => freitextPruefen(aufgabe);
+
+  wrap.appendChild(input);
+  wrap.appendChild(btn);
+  antworten.appendChild(wrap);
+  setTimeout(() => input.focus(), 100);
+}
+
+function antwortenClick(domPos, aufgabe, richtigDomPos) {
+  if (geantwortet) return;
+  geantwortet = true;
+  const buttons = document.querySelectorAll('.antwort-btn');
+  buttons.forEach(b => b.disabled = true);
+  const feedback = document.getElementById('feedback');
+  const weiter   = document.getElementById('weiter-btn');
+  if (domPos === richtigDomPos) {
+    richtigCount++;
+    buttons[domPos].classList.add('richtig');
+    feedback.textContent = '✓ Richtig! ' + aufgabe.erklaerung;
+    feedback.className = 'feedback show ok';
+  } else {
+    buttons[domPos].classList.add('falsch');
+    buttons[richtigDomPos].classList.add('richtig');
+    feedback.textContent = '✗ Leider falsch. ' + aufgabe.erklaerung;
+    feedback.className = 'feedback show nok';
+  }
+  weiter.className = 'weiter-btn show';
+  weiter.textContent = aktuellerIndex === aktuelleRunde.length - 1 ? 'Ergebnis ansehen →' : 'Weiter →';
+}
+
+function freitextPruefen(aufgabe) {
+  if (geantwortet) return;
+  const input = document.getElementById('freitext-input');
+  if (!input) return;
+  const antwort = input.value.trim().toLowerCase().replace(/\s+/g, '');
+  if (!antwort) { input.style.borderColor = 'var(--red)'; return; }
+  geantwortet = true;
+  input.disabled = true;
+  const richtigeVarianten = aufgabe.richtig.map(r => r.toLowerCase().replace(/\s+/g, '').replace(',', '.'));
+  const eingabe = antwort.replace(',', '.');
+  const korrekt = richtigeVarianten.some(r => eingabe === r);
+  const feedback = document.getElementById('feedback');
+  const weiter   = document.getElementById('weiter-btn');
+  if (korrekt) {
+    richtigCount++;
+    input.style.borderColor = 'var(--green)';
+    feedback.textContent = '✓ Richtig! ' + aufgabe.erklaerung;
+    feedback.className = 'feedback show ok';
+  } else {
+    input.style.borderColor = 'var(--red)';
+    feedback.textContent = '✗ Leider falsch. Richtige Antwort: ' + aufgabe.richtig[0] + '. ' + aufgabe.erklaerung;
+    feedback.className = 'feedback show nok';
+  }
+  weiter.className = 'weiter-btn show';
+  weiter.textContent = aktuellerIndex === aktuelleRunde.length - 1 ? 'Ergebnis ansehen →' : 'Weiter →';
+}
+
+function naechsteFrage() {
+  aktuellerIndex++;
+  if (aktuellerIndex < aktuelleRunde.length) zeigeFrage();
+  else zeigeErgebnis();
+}
+
+function zeigeErgebnis() {
+  document.getElementById('test-card').style.display = 'none';
+  const card    = document.getElementById('ergebnis-card');
+  card.className = 'ergebnis-card show';
+  const score   = document.getElementById('ergebnis-score');
+  const emoji   = document.getElementById('ergebnis-emoji');
+  const titel   = document.getElementById('ergebnis-titel');
+  const text    = document.getElementById('ergebnis-text');
+  const dlBtn   = document.getElementById('download-btn');
+  const dlHinweis = document.getElementById('download-hinweis');
+  const max     = aktuelleRunde.length;
+
+  score.textContent = `${richtigCount} / ${max}`;
+
+  let neuerStatus = null;
+  if (richtigCount === max) {
+    score.className = 'ergebnis-score gruen'; emoji.textContent = '🟢';
+    titel.textContent = 'Kompetenz erreicht!';
+    text.textContent  = 'Alle Aufgaben richtig. Lade jetzt die Datei herunter und lade sie bei IServ hoch.';
+    neuerStatus = 'gruen';
+    dlBtn.classList.remove('versteckt'); dlHinweis.classList.remove('versteckt');
+  } else if (richtigCount >= max - 1) {
+    score.className = 'ergebnis-score gelb'; emoji.textContent = '🟡';
+    titel.textContent = 'Fast geschafft!';
+    text.textContent  = 'Nur eine Aufgabe daneben – lies die Erklärungen nochmal und versuch es erneut.';
+    neuerStatus = 'gelb';
+    dlBtn.classList.remove('versteckt'); dlHinweis.classList.remove('versteckt');
+  } else {
+    score.className = 'ergebnis-score rot'; emoji.textContent = '🔄';
+    titel.textContent = 'Noch nicht ganz!';
+    text.textContent  = 'Schau dir die Erklärungen durch und starte nochmal. Du schaffst das.';
+    dlBtn.classList.add('versteckt'); dlHinweis.classList.add('versteckt');
+  }
+
+  versuche[aktiveKompetenz] = (versuche[aktiveKompetenz] || 0) + 1;
+  const alter = lernstand[aktiveKompetenz];
+  if (neuerStatus === 'gruen' || (neuerStatus === 'gelb' && alter !== 'gruen')) {
+    lernstand[aktiveKompetenz] = neuerStatus;
+  }
+  speichern();
+
+  if (neuerStatus) {
+    const item      = document.getElementById('item-' + aktiveKompetenz);
+    const aufkleber = document.getElementById('aufkleber-' + aktiveKompetenz);
+    if (item && aufkleber) {
+      item.className = 'kompetenz-item ' + (lernstand[aktiveKompetenz] || '');
+      aufkleber.textContent = lernstand[aktiveKompetenz] === 'gruen' ? '🟢' : '🟡';
+    }
+  }
+}
+
+function ergebnisDownload() {
+  const datum    = new Date().toLocaleString('de-DE');
+  const k        = kompetenzen.find(k => k.id === aktiveKompetenz);
+  const kNr      = kompetenzen.findIndex(k => k.id === aktiveKompetenz) + 1;
+  const status   = lernstand[aktiveKompetenz] || 'kein Aufkleber';
+  const daten = {
+    name: schuelerName, datum,
+    kompetenz_nr: kNr,
+    block: k.block,
+    schlagwort: k.schlagwort,
+    kompetenz: k.text,
+    ergebnis: `${richtigCount} von ${aktuelleRunde.length}`,
+    aufkleber: status === 'gruen' ? '🟢 Grün' : status === 'gelb' ? '🟡 Gelb' : 'Kein Aufkleber'
+  };
+  const blob = new Blob([JSON.stringify(daten, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `LF8_Block${k.block}_${schuelerName.replace(/\s+/g, '_')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function nochmal() {
+  document.getElementById('ergebnis-card').className = 'ergebnis-card';
+  document.getElementById('test-card').style.display = 'block';
+  aktuelleRunde  = zufaelligeAuswahl(aufgabenPool[aktiveKompetenz]);
+  aktuellerIndex = 0;
+  richtigCount   = 0;
+  zeigeFrage();
+}
+
+function zurueckZurLandkarte() {
+  document.getElementById('test-container').classList.add('versteckt');
+  document.getElementById('landkarte').classList.remove('versteckt');
+  document.getElementById('abgabe-hinweis').classList.add('show');
+  baueLandkarte();
+}
+
+// ─── START ────────────────────────────────────────────────────────────────────
+laden();
+if (schuelerName) zeigeHauptansicht();
+</script>
+</body>
+</html>
