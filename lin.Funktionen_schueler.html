@@ -721,7 +721,7 @@ function baueLandkarte() {
   // Haupt-Kompetenzen
   kompetenzen.filter(k => !bonusBlocks.has(k.block)).forEach((k, index) => {
     const status  = lernstand[k.id] || null;
-    const hatTest = aufgabenPool[k.id] !== undefined && aufgabenPool[k.id].length > 0;
+    const hatTest = aufgabenPool[k.id] !== undefined;
     const offen   = index < maxOffen;
 
     if (k.block !== letzterBlock) {
@@ -747,7 +747,7 @@ function baueLandkarte() {
 
     bonusKompetenzen.forEach(k => {
       const status  = lernstand[k.id] || null;
-      const hatTest = aufgabenPool[k.id] !== undefined && aufgabenPool[k.id].length > 0;
+      const hatTest = aufgabenPool[k.id] !== undefined;
       bonusWrapper.appendChild(baueKompetenzItem(k, status, hatTest, true));
     });
     liste.appendChild(bonusWrapper);
