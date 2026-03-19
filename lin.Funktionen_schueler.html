@@ -342,8 +342,18 @@ const kompetenzen = [
 const blockLabels = { I:'I Grundbegriffe', II:'II Rechnen', III:'III Graphen zeichnen', IV:'IV Gleichung bestimmen', V:'V Sachsituationen', VI:'VI Regressionsgerade' };
 const bonusBlocks = new Set(['VI']);
 
-// ─── AUFGABEN-POOL ────────────────────────────────────────────────────────────
+// ─── AUFGABEN-POOL (wird per fetch nachgeladen) ───────────────────────────────
 const aufgabenPool = {
+  'I_1': null, 'I_2': null, 'I_3': null, 'I_4': null, 'I_5': null, 'I_6': null,
+  'II_1': null, 'II_2': null, 'II_3': null, 'II_4': null,
+  'III_1': null, 'III_2': null,
+  'IV_1': null, 'IV_2': null, 'IV_3': null,
+  'V_1': null, 'V_2': null, 'V_3': null,
+  'VI_1': null, 'VI_2': null,
+};
+
+// ─── AUFGABEN (werden nicht mehr direkt genutzt – in aufgaben/*.js) ───────────
+const _aufgabenInline = {
 
   // ── BLOCK I ──────────────────────────────────────────────────────────────
 
@@ -617,6 +627,7 @@ const aufgabenPool = {
       richtig: 0, erklaerung: 'm = 10/5 = 2. c = 3. Also f(x) = 2x + 3.' },
   ],
 };
+// (Ende _aufgabenInline – nicht mehr in Verwendung)
 
 // ─── HILFSFUNKTIONEN ─────────────────────────────────────────────────────────
 
@@ -789,15 +800,31 @@ function baueKompetenzItem(k, status, hatTest, offen) {
 
 // ─── TEST ─────────────────────────────────────────────────────────────────────
 
-function testStarten(kompetenzId) {
+async function testStarten(kompetenzId) {
   aktiveKompetenz = kompetenzId;
+
+  // Aufgaben nachladen falls noch nicht geladen
+  if (aufgabenPool[kompetenzId] === null) {
+    try {
+      const response = await fetch('aufgaben/' + kompetenzId + '.js');
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const code = await response.text();
+      const geladen = eval('(' + code.replace(/^var\s+\w+\s*=\s*/, '').replace(/;\s*$/, '') + ')');
+      aufgabenPool[kompetenzId] = Array.isArray(geladen) ? geladen : [];
+      if (aufgabenPool[kompetenzId].length === 0) { alert('Aufgaben konnten nicht geladen werden.'); return; }
+    } catch(e) {
+      alert('Aufgaben konnten nicht geladen werden: ' + e.message);
+      return;
+    }
+  }
+
   const pool = aufgabenPool[kompetenzId];
   aktuelleRunde   = zufaelligeAuswahl(pool);
   aktuellerIndex  = 0;
   richtigCount    = 0;
   const kNr = kompetenzen.findIndex(k => k.id === kompetenzId) + 1;
   const k   = kompetenzen.find(k => k.id === kompetenzId);
-  document.getElementById('test-titel').textContent = k.schlagwort;
+  document.getElementById('test-titel').textContent = 'Kompetenz ' + kNr + ': ' + k.schlagwort;
   document.getElementById('landkarte').classList.add('versteckt');
   document.getElementById('abgabe-hinweis').classList.remove('show');
   document.getElementById('test-container').classList.remove('versteckt');
