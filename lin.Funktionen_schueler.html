@@ -631,6 +631,13 @@ const _aufgabenInline = {
 
 // ─── HILFSFUNKTIONEN ─────────────────────────────────────────────────────────
 
+function bruch(str) {
+  if (!str) return str;
+  return str.replace(/\[(-?\d+)\/(\d+)\]/g, (_, z, n) =>
+    `<span style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-size:0.85em;line-height:1.1;margin:0 2px;"><span>${z}</span><span style="border-top:1px solid currentColor;padding-top:1px;">${n}</span></span>`
+  );
+}
+
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 
 function zufaelligeAuswahl(pool) {
@@ -844,11 +851,11 @@ function zeigeFrage() {
   if (aufgabe.kontext) {
     const kb = document.createElement('div');
     kb.className = 'kontext-box';
-    kb.innerHTML = aufgabe.kontext;
+    kb.innerHTML = bruch(aufgabe.kontext);
     kbw.appendChild(kb);
   }
 
-  document.getElementById('frage-text').innerHTML = aufgabe.frage;
+  document.getElementById('frage-text').innerHTML = bruch(aufgabe.frage);
   document.getElementById('tabelle-wrapper').innerHTML = '';
   document.getElementById('antworten').innerHTML = '';
   document.getElementById('feedback').className = 'feedback';
@@ -868,7 +875,7 @@ function renderMC(aufgabe) {
   gemischt.forEach((origIdx, domPos) => {
     const btn = document.createElement('button');
     btn.className = 'antwort-btn';
-    btn.innerHTML = aufgabe.optionen[origIdx];
+    btn.innerHTML = bruch(aufgabe.optionen[origIdx]);
     btn.onclick = function() { antwortenClick(domPos, aufgabe, richtigNeu); };
     antworten.appendChild(btn);
   });
@@ -909,12 +916,12 @@ function antwortenClick(domPos, aufgabe, richtigDomPos) {
   if (domPos === richtigDomPos) {
     richtigCount++;
     buttons[domPos].classList.add('richtig');
-    feedback.textContent = '✓ Richtig! ' + aufgabe.erklaerung;
+    feedback.innerHTML = '✓ Richtig! ' + bruch(aufgabe.erklaerung);
     feedback.className = 'feedback show ok';
   } else {
     buttons[domPos].classList.add('falsch');
     buttons[richtigDomPos].classList.add('richtig');
-    feedback.textContent = '✗ Leider falsch. ' + aufgabe.erklaerung;
+    feedback.innerHTML = '✗ Leider falsch. ' + bruch(aufgabe.erklaerung);
     feedback.className = 'feedback show nok';
   }
   weiter.className = 'weiter-btn show';
@@ -937,11 +944,11 @@ function freitextPruefen(aufgabe) {
   if (korrekt) {
     richtigCount++;
     input.style.borderColor = 'var(--green)';
-    feedback.textContent = '✓ Richtig! ' + aufgabe.erklaerung;
+    feedback.innerHTML = '✓ Richtig! ' + bruch(aufgabe.erklaerung);
     feedback.className = 'feedback show ok';
   } else {
     input.style.borderColor = 'var(--red)';
-    feedback.textContent = '✗ Leider falsch. Richtige Antwort: ' + aufgabe.richtig[0] + '. ' + aufgabe.erklaerung;
+    feedback.innerHTML = '✗ Leider falsch. Richtige Antwort: ' + aufgabe.richtig[0] + '. ' + bruch(aufgabe.erklaerung);
     feedback.className = 'feedback show nok';
   }
   weiter.className = 'weiter-btn show';
